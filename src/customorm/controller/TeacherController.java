@@ -10,6 +10,8 @@ import customorm.dao.StudentDAO;
 import customorm.dao.TeacherDAO;
 import customorm.model.Student;
 import customorm.model.Teacher;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -26,8 +28,17 @@ public class TeacherController implements BaseController{
         
         System.out.println("Name: ");
         t.setName(scan.next());
+        System.out.println("StudentID's(comma seperated): ");
+        String[] str = scan.next().split(",");
+        List<Student> slist = new ArrayList<>();
+        for (int i = 0; i < str.length; i++) {
+            Student s = new Student();
+            s.setId(Integer.parseInt(str[i]));
+            slist.add(s);
+        }
         
-        
+        t.setStudents(slist);
+              
         TeacherDAO dao = new TeacherDAO();
         dao.insert(t);
 

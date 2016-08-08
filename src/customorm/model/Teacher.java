@@ -5,6 +5,9 @@
  */
 package customorm.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author junaid.ahmad
@@ -13,6 +16,7 @@ package customorm.model;
 public class Teacher {
     private int id;
     private String name;
+    private List<Student> students = new ArrayList();
     
     /**
      * @return the id
@@ -40,6 +44,20 @@ public class Teacher {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * @return the students
+     */
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    /**
+     * @param students the students to set
+     */
+    public void setStudents(List<Student> students) {
+        this.students = students;
     }
  
 }
