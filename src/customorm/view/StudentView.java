@@ -7,6 +7,8 @@ package customorm.view;
 
 import customorm.controller.StudentController;
 import customorm.model.Student;
+import customorm.model.Teacher;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -78,6 +80,15 @@ public class StudentView implements BaseView{
             System.out.println("ID: " + s.getId());
             System.out.println("Name: " + s.getName());
             System.out.println("Address: " + s.getAddress());
+            System.out.println("Realted Students: ");
+            if(s.getTeachers().get(0).getId() != 0){
+                for (Teacher teacher : s.getTeachers()) {
+                    System.out.println("ID: " + teacher.getId() 
+                            + "\tName: " + teacher.getName());
+                }
+            }else{
+                System.out.println("No Teacher Found...");
+            }                
         }else{
             System.out.println("No Record Found...");
         }

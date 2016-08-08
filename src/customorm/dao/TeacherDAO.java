@@ -12,6 +12,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,6 +34,8 @@ public class TeacherDAO implements BaseDAO{
     public void insert(Object obj) {
         PreparedStatement preparedStmt = null;
         Teacher s = (Teacher)obj;
+        StringBuilder query1 = new StringBuilder();
+        
         try {
             if(conn == null){
                 conn = dBConfig.configureDB();
@@ -39,14 +44,44 @@ public class TeacherDAO implements BaseDAO{
             // the mysql insert statement
             String query = " insert into teacher (name)"
                     + " values (?)";
+            query1.append("select * from student where id in (");
+            String query2 = " insert into teacher_student "
+                    + "(TEACHER_ID, STUDENT_ID) values (?, ?)";
+        
             
             // create the mysql insert preparedstatement
-            preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setString(1, s.getName());
-
-            
+            preparedStmt = conn.prepareStatement(query,
+                    Statement.RETURN_GENERATED_KEYS);
+            preparedStmt.setString(1, s.getName());          
             // execute the preparedstatement
             preparedStmt.execute();
+            
+            ResultSet r = preparedStmt.getGeneratedKeys();
+            r.next();
+            
+            if(s.getStudents().get(0).getId() != 0){
+                //check whether students exist or not
+                for(int i = 0; i < s.getStudents().size(); i++){
+                    query1.append(s.getStudents().get(i).getId()).append(",");
+                }
+                query1.deleteCharAt(query1.length() -1);
+                query1.append(")");
+                // create the mysql select preparedstatement
+                preparedStmt = conn.prepareStatement(query1.toString());
+                // execute the preparedstatement
+                ResultSet rs = preparedStmt.executeQuery();
+
+                //Adding data relation in teacher_student table
+                preparedStmt = conn.prepareStatement(query2);
+                while (rs.next()) {
+                    //id of teacher adding in teacher_student
+                    preparedStmt.setInt(1, r.getInt(1));
+                    //id of student adding in teacher_table
+                    preparedStmt.setInt(2, rs.getInt(1)); 
+                    preparedStmt.execute();
+                }
+            }
+            
             conn.commit();
         } catch (SQLException ex) {
             Logger.getLogger(TeacherDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -176,7 +211,10 @@ public class TeacherDAO implements BaseDAO{
             }
             conn.setAutoCommit(false);
             // the mysql insert statement
-            String query = " select * from teacher where id = ?";
+            String query = " select t.*, s.* from teacher t "
+                    + "left join teacher_student ts on t.id = ts.teacher_id "
+                    + "left join student s on ts.student_id = s.id "
+                    + "where t.id = ?";
             
             // create the mysql insert preparedstatement
             preparedStmt = conn.prepareStatement(query);
@@ -187,8 +225,20 @@ public class TeacherDAO implements BaseDAO{
             ResultSet rs = preparedStmt.executeQuery();
             conn.commit();
             if(rs.next()){
-                teacher.setId(rs.getInt("id"));
-                teacher.setName(rs.getString("name"));
+                teacher.setId(rs.getInt(1));
+                teacher.setName(rs.getString(2));
+         
+                
+                List<Student> sList = new ArrayList<>();
+                do{
+                    Student s = new Student();                   
+                    s.setId(rs.getInt(3));
+                    s.setName(rs.getString(4));
+                    s.setAddress(rs.getString(5));
+                    sList.add(s);
+                }while(rs.next());
+                teacher.setStudents(sList);
+                
             }
         } catch (SQLException ex) {
             Logger.getLogger(TeacherDAO.class.getName()).log(Level.SEVERE, null, ex);
