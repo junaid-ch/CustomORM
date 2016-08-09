@@ -28,11 +28,11 @@ public class TeacherController implements BaseController{
         List<Student> slist = new ArrayList<>();
         List<Course> clist = new ArrayList<>();
         
-        System.out.println("Name: ");
+        System.out.print("Name: ");
         t.setName(scan.next());
-        System.out.println("StudentID's(comma seperated): ");
+        System.out.print("StudentID's(comma seperated): ");
         String[] sId = scan.next().split(",");
-        System.out.println("CourseID's(comma seperated): ");
+        System.out.print("CourseID's(comma seperated): ");
         String[] cId = scan.next().split(",");
         
         for (String str1 : sId) {
@@ -58,7 +58,7 @@ public class TeacherController implements BaseController{
     public void delete() {
         
         TeacherDAO dao = new TeacherDAO();
-        System.out.println("ID: ");
+        System.out.print("ID: ");
         dao.delete(scan.nextInt());
     }
 
@@ -78,7 +78,7 @@ public class TeacherController implements BaseController{
     @Override
     public Teacher print() {
         TeacherDAO dao = new TeacherDAO();
-        System.out.println("ID: ");
+        System.out.print("ID: ");
         int id = scan.nextInt();
         Teacher s = (Teacher)dao.select(id);
         return s;

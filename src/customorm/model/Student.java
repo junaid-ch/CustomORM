@@ -20,6 +20,7 @@ public class Student {
    private String name;
    private String address;
    private List<Teacher> teachers = new ArrayList();
+   private List<Course> courses = new ArrayList();
    
    public String getName() {
       return name;
@@ -71,13 +72,31 @@ public class Student {
         this.teachers = teachers;
     }
     
+     /**
+     * @return the courses
+     */
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    /**
+     * @param courses the courses to set
+     */
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
+    }
+    
      @Override
     public boolean equals(Object obj) {
         
         if((obj != null) && (obj instanceof Student) 
                 && (this.id == ((Student)obj).getId()) 
-                && (this.name.equalsIgnoreCase(((Student)obj).getName()))
-                && (this.address.equalsIgnoreCase(((Student)obj).getAddress()))){
+                && (this.name == null 
+                ? ((Student)obj).getName() == null 
+                : this.name.equals(((Student)obj).getName()))
+                && (this.address == null 
+                ? ((Student)obj).getAddress() == null 
+                : this.address.equals(((Student)obj).getAddress()))){
             return true;
         }else{
             return false;

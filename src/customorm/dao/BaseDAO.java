@@ -5,8 +5,6 @@
  */
 package customorm.dao;
 
-import customorm.model.Student;
-
 /**
  *
  * @author junaid.ahmad

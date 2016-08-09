@@ -6,7 +6,6 @@
 package customorm.view;
 
 import customorm.controller.CourseController;
-import customorm.controller.StudentController;
 import customorm.model.Course;
 import customorm.model.Student;
 import customorm.model.Teacher;
@@ -76,8 +75,9 @@ public class CourseView implements BaseView{
         Course c = cc.print();
         if(c.getId() != 0){
             System.out.println("Course: ");
-            System.out.println("ID: " + c.getId());
-            System.out.println("Name: " + c.getName());
+            System.out.println("ID: " + c.getId() 
+                    + "\tName: " + c.getName());
+            
             System.out.println("Realted Teachers: ");
             if(c.getTeachers().get(0).getId() != 0){
                 for (Teacher teacher : c.getTeachers()) {
@@ -87,6 +87,7 @@ public class CourseView implements BaseView{
             }else{
                 System.out.println("No Teacher Found...");
             } 
+            
             System.out.println("Realted Students: ");
             if(c.getStudents().get(0).getId() != 0){
                 for (Student student : c.getStudents()) {

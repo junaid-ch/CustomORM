@@ -81,7 +81,9 @@ public class Teacher {
         
         if((obj != null) && (obj instanceof Teacher) 
                 && (this.id == ((Teacher)obj).getId()) 
-                && (this.name.equalsIgnoreCase(((Teacher)obj).getName()))){
+                && (this.name == null 
+                ? ((Teacher)obj).getName() == null 
+                : this.name.equals(((Teacher)obj).getName()))){
             return true;
         }else{
             return false;

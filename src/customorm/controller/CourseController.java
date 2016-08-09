@@ -6,7 +6,6 @@
 package customorm.controller;
 
 import customorm.dao.CourseDAO;
-import customorm.dao.StudentDAO;
 import customorm.model.Course;
 import customorm.model.Student;
 import customorm.model.Teacher;
@@ -28,11 +27,11 @@ public class CourseController implements BaseController{
         List<Teacher> tlist = new ArrayList<>();
         List<Student> slist = new ArrayList<>();
         
-        System.out.println("Name: ");
+        System.out.print("Name: ");
         c.setName(scan.next());
-        System.out.println("TeacherID's(comma seperated): ");
+        System.out.print("TeacherID's(comma seperated): ");
         String[] tId = scan.next().split(",");
-        System.out.println("StudentID's(comma seperated): ");
+        System.out.print("StudentID's(comma seperated): ");
         String[] sId = scan.next().split(",");
         
         
@@ -61,7 +60,7 @@ public class CourseController implements BaseController{
     public void delete() {
         
         CourseDAO dao = new CourseDAO();
-        System.out.println("ID: ");
+        System.out.print("ID: ");
         dao.delete(scan.nextInt());
     }
 
@@ -81,7 +80,7 @@ public class CourseController implements BaseController{
     @Override
     public Course print() {
         CourseDAO dao = new CourseDAO();
-        System.out.println("ID: ");
+        System.out.print("ID: ");
         int id = scan.nextInt();
         Course c = (Course)dao.select(id);
         return c;

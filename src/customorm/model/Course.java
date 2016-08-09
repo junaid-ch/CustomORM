@@ -80,7 +80,9 @@ public class Course {
         
         if((obj != null) && (obj instanceof Course) 
                 && (this.id == ((Course)obj).getId()) 
-                && (this.name.equalsIgnoreCase(((Course)obj).getName()))){
+                && (this.name == null 
+                ? ((Course)obj).getName() == null 
+                : this.name.equals(((Course)obj).getName()))){
             return true;
         }else{
             return false;

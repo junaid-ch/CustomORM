@@ -6,6 +6,7 @@
 package customorm.view;
 
 import customorm.controller.StudentController;
+import customorm.model.Course;
 import customorm.model.Student;
 import customorm.model.Teacher;
 import java.util.Scanner;
@@ -76,10 +77,10 @@ public class StudentView implements BaseView{
         Student s = sc.print();
         if(s.getId() != 0){
             System.out.println("Student: ");
-            System.out.println("ID: " + s.getId());
-            System.out.println("Name: " + s.getName());
-            System.out.println("Address: " + s.getAddress());
-            System.out.println("Realted Students: ");
+            System.out.println("ID: " + s.getId() 
+                    + "\tName: " + s.getName()
+                    + "\tAddress: " + s.getAddress());
+            System.out.println("Realted Teachers: ");
             if(s.getTeachers().get(0).getId() != 0){
                 for (Teacher teacher : s.getTeachers()) {
                     System.out.println("ID: " + teacher.getId() 
@@ -87,7 +88,16 @@ public class StudentView implements BaseView{
                 }
             }else{
                 System.out.println("No Teacher Found...");
-            }                
+            }
+            System.out.println("Realted Courses: ");
+            if(s.getCourses().get(0).getId() != 0){
+                for (Course course : s.getCourses()) {
+                    System.out.println("ID: " + course.getId() 
+                            + "\tName: " + course.getName());
+                }
+            }else{
+                System.out.println("No Course Found...");
+            }      
         }else{
             System.out.println("No Record Found...");
         }

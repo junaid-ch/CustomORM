@@ -6,6 +6,7 @@
 package customorm.controller;
 
 import customorm.dao.StudentDAO;
+import customorm.model.Course;
 import customorm.model.Student;
 import customorm.model.Teacher;
 import java.util.ArrayList;
@@ -22,25 +23,35 @@ public class StudentController implements BaseController{
     
     @Override
     public void add() {
-        Student t = new Student();
-        
-        System.out.println("Name: ");
-        t.setName(scan.next());
-        System.out.println("Address: ");
-        t.setAddress(scan.next());
-        System.out.println("TeacherID's(comma seperated): ");
-        String[] str = scan.next().split(",");
+        Student student = new Student();
         List<Teacher> tlist = new ArrayList<>();
-        for (String str1 : str) {
+        List<Course> clist = new ArrayList<>();
+        
+        System.out.print("Name: ");
+        student.setName(scan.next());
+        System.out.print("Address: ");
+        student.setAddress(scan.next());
+        System.out.print("TeacherID's(comma seperated): ");
+        String[] tId = scan.next().split(",");
+        System.out.print("CourseID's(comma seperated): ");
+        String[] cId = scan.next().split(",");
+        
+        for (String str1 : tId) {
             Teacher t1 = new Teacher();
             t1.setId(Integer.parseInt(str1));
             tlist.add(t1);
         }
         
-        t.setTeachers(tlist);
+        for (String str1 : cId) {
+            Course c = new Course();
+            c.setId(Integer.parseInt(str1));
+            clist.add(c);
+        }
         
+        student.setTeachers(tlist);
+        student.setCourses(clist);
         StudentDAO dao = new StudentDAO();
-        dao.insert(t);
+        dao.insert(student);
 
     }
 
@@ -48,7 +59,7 @@ public class StudentController implements BaseController{
     public void delete() {
         
         StudentDAO dao = new StudentDAO();
-        System.out.println("ID: ");
+        System.out.print("ID: ");
         dao.delete(scan.nextInt());
     }
 
@@ -70,7 +81,7 @@ public class StudentController implements BaseController{
     @Override
     public Student print() {
         StudentDAO dao = new StudentDAO();
-        System.out.println("ID: ");
+        System.out.print("ID: ");
         int id = scan.nextInt();
         Student s = (Student)dao.select(id);
         return s;

@@ -24,7 +24,7 @@ public class CustomORM {
     public static void main(String[] args) {
         // TODO code application logic here
         
-        BaseView bv = null;
+        BaseView bv;
         Scanner scan = new Scanner(System.in);
         int option = 0;
         

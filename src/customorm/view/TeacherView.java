@@ -73,8 +73,9 @@ public class TeacherView implements BaseView{
         
         if(t.getId() != 0){
             System.out.println("Teacher: ");
-            System.out.println("ID: " + t.getId());
-            System.out.println("Name: " + t.getName());
+             System.out.println("ID: " + t.getId() 
+                            + "\tName: " + t.getName());
+             
             System.out.println("Realted Students: ");
             if(t.getStudents().get(0).getId() != 0){    //students exist or not
                 for (Student student: t.getStudents()) {

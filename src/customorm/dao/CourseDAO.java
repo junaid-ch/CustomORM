@@ -66,7 +66,8 @@ public class CourseDAO implements BaseDAO{
             if(c.getTeachers().get(0).getId() != 0){    //if teacher exist
                 //check whether teacher exist or not
                 for(int i = 0; i < c.getTeachers().size(); i++){
-                    query1.append(c.getTeachers().get(i).getId()).append(",");
+                    query1.append(c.getTeachers()
+                            .get(i).getId()).append(",");
                 }
                 query1.deleteCharAt(query1.length() -1);
                 query1.append(")");
@@ -86,7 +87,8 @@ public class CourseDAO implements BaseDAO{
             if(c.getStudents().get(0).getId() != 0){    //if students exist
                 //check whether studeny exist or not
                 for(int i = 0; i < c.getStudents().size(); i++){
-                    query2.append(c.getStudents().get(i).getId()).append(",");
+                    query2.append(c.getStudents()
+                            .get(i).getId()).append(",");
                 }
                 query2.deleteCharAt(query2.length() -1);
                 query2.append(")");
@@ -108,13 +110,13 @@ public class CourseDAO implements BaseDAO{
         } catch (SQLException ex) {
             Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
             if (conn != null) {
-            try {
-                System.err.print("Transaction is being rolled back");
-                conn.rollback();
-            } catch(SQLException excep) {
-                excep.printStackTrace();
+                try {
+                    System.err.print("Transaction is being rolled back");
+                    conn.rollback();
+                } catch(SQLException excep) {
+                    excep.printStackTrace();
+                }
             }
-        }
         }finally{
             try{
                 if(preparedStmt != null){
@@ -146,20 +148,19 @@ public class CourseDAO implements BaseDAO{
             preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1, id);
             
-            
             // execute the preparedstatement
             preparedStmt.executeUpdate();
             conn.commit();
         } catch (SQLException ex) {
             Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
             if (conn != null) {
-            try {
-                System.err.print("Transaction is being rolled back");
-                conn.rollback();
-            } catch(SQLException excep) {
-                excep.printStackTrace();
+                try {
+                    System.err.print("Transaction is being rolled back");
+                    conn.rollback();
+                } catch(SQLException excep) {
+                    excep.printStackTrace();
+                }
             }
-        }
         }finally{
             try{
                 if(preparedStmt != null){
@@ -200,13 +201,13 @@ public class CourseDAO implements BaseDAO{
         } catch (SQLException ex) {
             Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
             if (conn != null) {
-            try {
-                System.err.print("Transaction is being rolled back");
-                conn.rollback();
-            } catch(SQLException excep) {
-                excep.printStackTrace();
+                try {
+                    System.err.print("Transaction is being rolled back");
+                    conn.rollback();
+                } catch(SQLException excep) {
+                    excep.printStackTrace();
+                }
             }
-        }
         }finally{
             try{
                 if(preparedStmt != null){
@@ -257,7 +258,7 @@ public class CourseDAO implements BaseDAO{
                     Teacher t = new Teacher();
                     t.setId(rs.getInt(3));
                     t.setName(rs.getString(4));
-                    if(!tList.contains(t)){
+                    if(!tList.contains(t)){     //ignore repeating objects
                         tList.add(t);
                     }
                     
@@ -265,7 +266,7 @@ public class CourseDAO implements BaseDAO{
                     s.setId(rs.getInt(5));
                     s.setName(rs.getString(6));
                     s.setAddress(rs.getString(7));
-                    if(!sList.contains(s)){
+                    if(!sList.contains(s)){     //ignore repeating objects
                         sList.add(s);
                     }
                 }while(rs.next());
@@ -275,13 +276,13 @@ public class CourseDAO implements BaseDAO{
         } catch (SQLException ex) {
             Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
             if (conn != null) {
-            try {
-                System.err.print("Transaction is being rolled back");
-                conn.rollback();
-            } catch(SQLException excep) {
-                excep.printStackTrace();
+                try {
+                    System.err.print("Transaction is being rolled back");
+                    conn.rollback();
+                } catch(SQLException excep) {
+                    excep.printStackTrace();
+                }
             }
-        }
         }finally{
             try{
                 if(preparedStmt != null){
@@ -294,9 +295,7 @@ public class CourseDAO implements BaseDAO{
             }catch(SQLException se){
                 se.printStackTrace();
             }//end finally try
-        }
-
-        
+        }      
         return course;
     }
 }
