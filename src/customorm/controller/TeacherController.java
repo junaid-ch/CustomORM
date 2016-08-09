@@ -6,6 +6,8 @@
 package customorm.controller;
 
 
+import customorm.dao.BaseDAO;
+import customorm.dao.DAOFactory;
 import customorm.dao.TeacherDAO;
 import customorm.model.Course;
 import customorm.model.Student;
@@ -20,7 +22,15 @@ import java.util.Scanner;
  */
 public class TeacherController implements BaseController{
     
-    Scanner scan = new Scanner(System.in);
+    private final Scanner scan;
+    private final BaseDAO dao;
+    private final DAOFactory dAOFactory;
+
+    public TeacherController() {
+        scan = new Scanner(System.in);
+        dAOFactory = new DAOFactory();
+        dao = dAOFactory.getDAO("teacherDAO");
+    }
     
     @Override
     public void add() {
@@ -49,22 +59,19 @@ public class TeacherController implements BaseController{
         
         t.setStudents(slist);
         t.setCourses(clist);
-        TeacherDAO dao = new TeacherDAO();
+
         dao.insert(t);
 
     }
 
     @Override
     public void delete() {
-        
-        TeacherDAO dao = new TeacherDAO();
         System.out.print("ID: ");
         dao.delete(scan.nextInt());
     }
 
     @Override
     public void update() {
-        TeacherDAO dao = new TeacherDAO();
         Teacher t = new Teacher();
         
         System.out.print("ID: ");
@@ -77,7 +84,6 @@ public class TeacherController implements BaseController{
 
     @Override
     public Teacher print() {
-        TeacherDAO dao = new TeacherDAO();
         System.out.print("ID: ");
         int id = scan.nextInt();
         Teacher s = (Teacher)dao.select(id);
