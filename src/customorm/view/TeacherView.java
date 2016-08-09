@@ -5,71 +5,45 @@
  */
 package customorm.view;
 
-import customorm.controller.TeacherController;
+import customorm.controller.BaseController;
+import customorm.controller.ControllerFactory;
 import customorm.model.Course;
 import customorm.model.Student;
 import customorm.model.Teacher;
-import java.util.Scanner;
 
 /**
  *
  * @author junaid.ahmad
  */
-public class TeacherView implements BaseView{
+public class TeacherView extends BaseView{
     
-    @Override
-    public void menu(){
-        int option = 0;
-        Scanner scan = new Scanner(System.in);
-        
-        System.out.println("1. add");
-        System.out.println("2. delete");
-        System.out.println("3. update");
-        System.out.println("4. view");
-        
-        option = scan.nextInt();
-        
-        switch (option) {
-            case 1:
-                add();
-                break;
-            case 2:
-                delete();
-                break;
-            case 3:
-                update();
-                break;
-            case 4:
-                print();
-                break;
-            default:
-                break;
-        }
-        
+    private ControllerFactory controllerFactory;
+    private BaseController baseController;
+    
+    public TeacherView() {
+        controllerFactory = new ControllerFactory();
+        baseController = controllerFactory.getController("teacherController");
     }
     
     @Override
     public void add(){
-        TeacherController tc = new TeacherController();
-        tc.add();
+        baseController.add();
     }
     
     @Override
     public void delete(){
-        TeacherController tc = new TeacherController();
-        tc.delete();
+        baseController.delete();
     }
     
     @Override
     public void update(){
-        TeacherController tc = new TeacherController();
-        tc.update();
+        baseController.update();
     }
     
     @Override
     public void print(){
-        TeacherController tc = new TeacherController();
-        Teacher t = tc.print();
+        
+        Teacher t = (Teacher)baseController.print();
         
         if(t.getId() != 0){
             System.out.println("Teacher: ");

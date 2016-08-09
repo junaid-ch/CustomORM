@@ -5,11 +5,11 @@
  */
 package customorm.view;
 
-import customorm.controller.StudentController;
+import customorm.controller.BaseController;
+import customorm.controller.ControllerFactory;
 import customorm.model.Course;
 import customorm.model.Student;
 import customorm.model.Teacher;
-import java.util.Scanner;
 
 
 /**
@@ -17,64 +17,35 @@ import java.util.Scanner;
  * @author junaid.ahmad
  */
 
-public class StudentView implements BaseView{
+public class StudentView extends BaseView{
+
+    private ControllerFactory controllerFactory;
+    private BaseController baseController;
     
-    Scanner scan = null;
-    
-    @Override
-    public void menu(){
-        int option = 0;
-        scan = new Scanner(System.in);
-        
-        System.out.println("1. add");
-        System.out.println("2. delete");
-        System.out.println("3. update");
-        System.out.println("4. view");
-        
-        option = scan.nextInt();
-        
-        switch (option) {
-            case 1:
-                add();
-                break;
-            case 2:
-                delete();
-                break;
-            case 3:
-                update();
-                break;
-            case 4:
-                print();
-                break;
-            default:
-                break;
-        }
-        
+    public StudentView() {
+        controllerFactory = new ControllerFactory();
+        baseController = controllerFactory.getController("studentController");
     }
-    
+        
     @Override
     public void add(){
-        StudentController sc = new StudentController();
-        sc.add();
+        baseController.add();
     }
     
     @Override
     public void delete(){
-        StudentController sc = new StudentController();
-        sc.delete();
+        baseController.delete();
     }
     
     @Override
     public void update(){
-        StudentController sc = new StudentController();
-        sc.update();
+        baseController.update();
     }
     
     @Override
     public void print(){
         
-        StudentController sc = new StudentController();
-        Student s = sc.print();
+        Student s = (Student)baseController.print();
         if(s.getId() != 0){
             System.out.println("Student: ");
             System.out.println("ID: " + s.getId() 

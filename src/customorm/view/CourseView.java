@@ -5,74 +5,45 @@
  */
 package customorm.view;
 
-import customorm.controller.CourseController;
+import customorm.controller.BaseController;
+import customorm.controller.ControllerFactory;
 import customorm.model.Course;
 import customorm.model.Student;
 import customorm.model.Teacher;
-import java.util.Scanner;
 
 /**
  *
  * @author junaid.ahmad
  */
-public class CourseView implements BaseView{
+public class CourseView extends BaseView{
     
-    Scanner scan = null;
+    private final ControllerFactory controllerFactory;
+    private final BaseController baseController;
     
-    @Override
-    public void menu(){
-        int option = 0;
-        scan = new Scanner(System.in);
-        
-        System.out.println("1. add");
-        System.out.println("2. delete");
-        System.out.println("3. update");
-        System.out.println("4. view");
-        
-        option = scan.nextInt();
-        
-        switch (option) {
-            case 1:
-                add();
-                break;
-            case 2:
-                delete();
-                break;
-            case 3:
-                update();
-                break;
-            case 4:
-                print();
-                break;
-            default:
-                break;
-        }
-        
+    public CourseView() {
+        controllerFactory = new ControllerFactory();
+        baseController = controllerFactory.getController("courseController");
     }
     
     @Override
     public void add(){
-        CourseController cc = new CourseController();
-        cc.add();
+        baseController.add();
     }
     
     @Override
     public void delete(){
-        CourseController cc = new CourseController();
-        cc.delete();
+        baseController.delete();
     }
     
     @Override
     public void update(){
-        CourseController cc = new CourseController();
-        cc.update();
+        baseController.update();
     }
     
     @Override
     public void print(){
         
-        CourseController cc = new CourseController();
-        Course c = cc.print();
+        Course c = (Course)baseController.print();
         if(c.getId() != 0){
             System.out.println("Course: ");
             System.out.println("ID: " + c.getId() 

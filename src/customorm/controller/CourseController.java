@@ -26,7 +26,7 @@ public class CourseController implements BaseController{
         Course c = new Course();
         List<Teacher> tlist = new ArrayList<>();
         List<Student> slist = new ArrayList<>();
-        
+
         System.out.print("Name: ");
         c.setName(scan.next());
         System.out.print("TeacherID's(comma seperated): ");
