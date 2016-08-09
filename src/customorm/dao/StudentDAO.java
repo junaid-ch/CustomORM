@@ -13,11 +13,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Arrays;
 import java.util.List;
 /**
  *
@@ -37,6 +35,8 @@ public class StudentDAO implements BaseDAO{
         PreparedStatement preparedStmt = null;
         Student s = (Student)obj;
         StringBuilder query1 = new StringBuilder();
+        StringBuilder query2 = new StringBuilder();
+        
         try {
             if(conn == null){
                 conn = dBConfig.configureDB();
@@ -46,9 +46,10 @@ public class StudentDAO implements BaseDAO{
             String query = " insert into student (name, address)"
                     + " values (?, ?)";
             query1.append("select * from teacher where id in (");
-            String query2 = " insert into teacher_student "
+            query2.append("select * from course where id in (");
+            String query3 = " insert into teacher_student "
                     + "(TEACHER_ID, STUDENT_ID) values (?, ?)";
-            
+          
             // create the mysql insert preparedstatement
             preparedStmt = conn.prepareStatement(query, 
                     Statement.RETURN_GENERATED_KEYS);
@@ -73,7 +74,7 @@ public class StudentDAO implements BaseDAO{
                 ResultSet rs = preparedStmt.executeQuery();
 
                 //Adding data relation in teacher_student table
-                preparedStmt = conn.prepareStatement(query2);
+                preparedStmt = conn.prepareStatement(query3);
                 while (rs.next()) {
                     preparedStmt.setInt(1, rs.getInt("id"));
                     preparedStmt.setInt(2, r.getInt(1)); 

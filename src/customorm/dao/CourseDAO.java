@@ -23,10 +23,10 @@ import java.util.logging.Logger;
  *
  * @author junaid.ahmad
  */
-public class TeacherDAO implements BaseDAO{
+public class CourseDAO implements BaseDAO{
     DBConfig dBConfig;
     Connection conn = null;
-    public TeacherDAO(){
+    public CourseDAO(){
         dBConfig = DBConfig.getInstance();
         //conn = dBConfig.configureDB();
     }
@@ -34,7 +34,7 @@ public class TeacherDAO implements BaseDAO{
     @Override
     public void insert(Object obj) {
         PreparedStatement preparedStmt = null;
-        Teacher t = (Teacher)obj;
+        Course c = (Course)obj;
         StringBuilder query1 = new StringBuilder();
         StringBuilder query2 = new StringBuilder();
         
@@ -44,30 +44,29 @@ public class TeacherDAO implements BaseDAO{
             }
             conn.setAutoCommit(false);
             // the mysql insert statement
-            String query = " insert into teacher (name)"
+            String query = " insert into course (name)"
                     + " values (?)";
-            query1.append("select * from student where id in (");
-            query2.append("select * from course where id in (");
-            String query3 = " insert into teacher_student "
-                    + "(TEACHER_ID, STUDENT_ID) values (?, ?)";
-            String query4 = " insert into teacher_course "
+            query1.append("select * from teacher where id in (");
+            query2.append("select * from student where id in (");
+            String query3 = " insert into teacher_course "
                     + "(TEACHER_ID, COURSE_ID) values (?, ?)";
-        
+            String query4 = " insert into student_course "
+                    + "(STUDENT_ID, COURSE_ID) values (?, ?)";
             
             // create the mysql insert preparedstatement
-            preparedStmt = conn.prepareStatement(query,
+            preparedStmt = conn.prepareStatement(query, 
                     Statement.RETURN_GENERATED_KEYS);
-            preparedStmt.setString(1, t.getName());          
+            preparedStmt.setString(1, c.getName());
             // execute the preparedstatement
             preparedStmt.execute();
-            
+            //getting id of last iserted record
             ResultSet r = preparedStmt.getGeneratedKeys();
             r.next();
             
-            if(t.getStudents().get(0).getId() != 0){
-                //check whether students exist or not
-                for(int i = 0; i < t.getStudents().size(); i++){
-                    query1.append(t.getStudents().get(i).getId()).append(",");
+            if(c.getTeachers().get(0).getId() != 0){    //if teacher exist
+                //check whether teacher exist or not
+                for(int i = 0; i < c.getTeachers().size(); i++){
+                    query1.append(c.getTeachers().get(i).getId()).append(",");
                 }
                 query1.deleteCharAt(query1.length() -1);
                 query1.append(")");
@@ -76,21 +75,18 @@ public class TeacherDAO implements BaseDAO{
                 // execute the preparedstatement
                 ResultSet rs = preparedStmt.executeQuery();
 
-                //Adding data relation in teacher_student table
+                //Adding data relation in teacher_course table
                 preparedStmt = conn.prepareStatement(query3);
                 while (rs.next()) {
-                    //id of teacher adding in teacher_student
-                    preparedStmt.setInt(1, r.getInt(1));
-                    //id of student adding in teacher_table
-                    preparedStmt.setInt(2, rs.getInt(1)); 
+                    preparedStmt.setInt(1, rs.getInt("id"));
+                    preparedStmt.setInt(2, r.getInt(1)); 
                     preparedStmt.execute();
                 }
-                
-                
-            }if(t.getCourses().get(0).getId() != 0){
-                //check whether students exist or not
-                for(int i = 0; i < t.getCourses().size(); i++){
-                    query2.append(t.getCourses().get(i).getId()).append(",");
+            }
+            if(c.getStudents().get(0).getId() != 0){    //if students exist
+                //check whether studeny exist or not
+                for(int i = 0; i < c.getStudents().size(); i++){
+                    query2.append(c.getStudents().get(i).getId()).append(",");
                 }
                 query2.deleteCharAt(query2.length() -1);
                 query2.append(")");
@@ -99,21 +95,18 @@ public class TeacherDAO implements BaseDAO{
                 // execute the preparedstatement
                 ResultSet rs = preparedStmt.executeQuery();
 
-                //Adding data relation in teacher_student table
+                //Adding data relation in teacher_course table
                 preparedStmt = conn.prepareStatement(query4);
                 while (rs.next()) {
-                    //id of teacher adding in teacher_student
-                    preparedStmt.setInt(1, r.getInt(1));
-                    //id of student adding in teacher_table
-                    preparedStmt.setInt(2, rs.getInt(1)); 
+                    preparedStmt.setInt(1, rs.getInt("id"));
+                    preparedStmt.setInt(2, r.getInt(1)); 
                     preparedStmt.execute();
                 }
-                              
             }
-                        
             conn.commit();
+ 
         } catch (SQLException ex) {
-            Logger.getLogger(TeacherDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
             if (conn != null) {
             try {
                 System.err.print("Transaction is being rolled back");
@@ -146,10 +139,10 @@ public class TeacherDAO implements BaseDAO{
                 conn = dBConfig.configureDB();
             }
             conn.setAutoCommit(false);
-            // the mysql insert statement
-            String query = " delete from teacher where id = ?";
+            // the mysql delete statement
+            String query = " delete from course where id = ?";
             
-            // create the mysql insert preparedstatement
+            // create the mysql delete preparedstatement
             preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1, id);
             
@@ -158,7 +151,7 @@ public class TeacherDAO implements BaseDAO{
             preparedStmt.executeUpdate();
             conn.commit();
         } catch (SQLException ex) {
-            Logger.getLogger(TeacherDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
             if (conn != null) {
             try {
                 System.err.print("Transaction is being rolled back");
@@ -186,26 +179,26 @@ public class TeacherDAO implements BaseDAO{
     @Override
     public void update(Object obj) {
         PreparedStatement preparedStmt = null;
-        Teacher t = (Teacher)obj;
+        Course c = (Course)obj;
         try {
             if(conn == null){
                 conn = dBConfig.configureDB();
             }
             conn.setAutoCommit(false);
-            // the mysql insert statement
-            String query = " update teacher set name = ? where id = ?";
+            // the mysql update statement
+            String query = " update course set name = ? where id = ?";
             
-            // create the mysql insert preparedstatement
+            // create the mysql update preparedstatement
             preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setString(1, t.getName());
-            preparedStmt.setInt(2, t.getId());
+            preparedStmt.setString(1, c.getName());
+            preparedStmt.setInt(2, c.getId());
             
             
             // execute the preparedstatement
             preparedStmt.executeUpdate();
             conn.commit();
         } catch (SQLException ex) {
-            Logger.getLogger(TeacherDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
             if (conn != null) {
             try {
                 System.err.print("Transaction is being rolled back");
@@ -232,22 +225,22 @@ public class TeacherDAO implements BaseDAO{
 
     @Override
     public Object select(int id) {
-        Teacher teacher = new Teacher();
+        Course course = new Course();
         PreparedStatement preparedStmt = null;
         try {
             if(conn == null){
                 conn = dBConfig.configureDB();
             }
             conn.setAutoCommit(false);
-            // the mysql insert statement
-            String query = " select t.*, s.*,c.* from teacher t "
-                    + "left join teacher_student ts on t.id = ts.teacher_id "
-                    + "left join student s on ts.student_id = s.id "
-                    + "left join teacher_course tc on t.id = tc.teacher_id "
-                    + "left join course c on tc.course_id = c.id "
-                    + "where t.id = ?";
+            // the mysql select statement
+            String query = " select c.*, t.*, s.* from course c "
+                    + "left join teacher_course ts on c.id = ts.course_id "
+                    + "left join teacher t on ts.teacher_id = t.id "
+                    + "left join student_course sc on c.id = sc.course_id "
+                    + "left join student s on sc.student_id = s.id "
+                    + "where c.id = ?";
             
-            // create the mysql insert preparedstatement
+            // create the mysql select preparedstatement
             preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1, id);
             
@@ -256,35 +249,31 @@ public class TeacherDAO implements BaseDAO{
             ResultSet rs = preparedStmt.executeQuery();
             conn.commit();
             if(rs.next()){
-                teacher.setId(rs.getInt(1));
-                teacher.setName(rs.getString(2));
-         
-                
+                course.setId(rs.getInt(1));
+                course.setName(rs.getString(2));
+                List<Teacher> tList = new ArrayList<>();
                 List<Student> sList = new ArrayList<>();
-                ArrayList<Course> cList = new ArrayList<>();
                 do{
-                    Student s = new Student();                   
-                    s.setId(rs.getInt(3));
-                    s.setName(rs.getString(4));
-                    s.setAddress(rs.getString(5));
-                    if(!sList.contains(s)){ //obeject already present or not
+                    Teacher t = new Teacher();
+                    t.setId(rs.getInt(3));
+                    t.setName(rs.getString(4));
+                    if(!tList.contains(t)){
+                        tList.add(t);
+                    }
+                    
+                    Student s = new Student();
+                    s.setId(rs.getInt(5));
+                    s.setName(rs.getString(6));
+                    s.setAddress(rs.getString(7));
+                    if(!sList.contains(s)){
                         sList.add(s);
                     }
-                                    
-                    Course c = new Course();
-                    c.setId(rs.getInt(6));
-                    c.setName(rs.getString(7));
-
-                    if(!cList.contains(c)){
-                        cList.add(c);
-                    }
-                  
                 }while(rs.next());
-                teacher.setStudents(sList);
-                teacher.setCourses(cList);
+                course.setTeachers(tList);
+                course.setStudents(sList);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(TeacherDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
             if (conn != null) {
             try {
                 System.err.print("Transaction is being rolled back");
@@ -308,6 +297,6 @@ public class TeacherDAO implements BaseDAO{
         }
 
         
-        return teacher;
+        return course;
     }
 }

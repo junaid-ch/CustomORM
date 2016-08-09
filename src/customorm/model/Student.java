@@ -7,6 +7,7 @@ package customorm.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -70,4 +71,25 @@ public class Student {
         this.teachers = teachers;
     }
     
+     @Override
+    public boolean equals(Object obj) {
+        
+        if((obj != null) && (obj instanceof Student) 
+                && (this.id == ((Student)obj).getId()) 
+                && (this.name.equalsIgnoreCase(((Student)obj).getName()))
+                && (this.address.equalsIgnoreCase(((Student)obj).getAddress()))){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + this.id;
+        hash = 97 * hash + Objects.hashCode(this.name);
+        hash = 97 * hash + Objects.hashCode(this.address);
+        return hash;
+    }
 }

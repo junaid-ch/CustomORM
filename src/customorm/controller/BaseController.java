@@ -5,8 +5,6 @@
  */
 package customorm.controller;
 
-import customorm.model.Student;
-
 /**
  *
  * @author junaid.ahmad

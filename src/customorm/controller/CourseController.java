@@ -5,8 +5,8 @@
  */
 package customorm.controller;
 
-
-import customorm.dao.TeacherDAO;
+import customorm.dao.CourseDAO;
+import customorm.dao.StudentDAO;
 import customorm.model.Course;
 import customorm.model.Student;
 import customorm.model.Teacher;
@@ -18,69 +18,73 @@ import java.util.Scanner;
  *
  * @author junaid.ahmad
  */
-public class TeacherController implements BaseController{
+public class CourseController implements BaseController{
     
     Scanner scan = new Scanner(System.in);
     
     @Override
     public void add() {
-        Teacher t = new Teacher();
+        Course c = new Course();
+        List<Teacher> tlist = new ArrayList<>();
         List<Student> slist = new ArrayList<>();
-        List<Course> clist = new ArrayList<>();
         
         System.out.println("Name: ");
-        t.setName(scan.next());
+        c.setName(scan.next());
+        System.out.println("TeacherID's(comma seperated): ");
+        String[] tId = scan.next().split(",");
         System.out.println("StudentID's(comma seperated): ");
         String[] sId = scan.next().split(",");
-        System.out.println("CourseID's(comma seperated): ");
-        String[] cId = scan.next().split(",");
+        
+        
+        for (String str1 : tId) {
+            Teacher t1 = new Teacher();
+            t1.setId(Integer.parseInt(str1));
+            tlist.add(t1);
+        }
+        
         
         for (String str1 : sId) {
-            Student s = new Student();
-            s.setId(Integer.parseInt(str1));
-            slist.add(s);
+            Student t1 = new Student();
+            t1.setId(Integer.parseInt(str1));
+            slist.add(t1);
         }
         
-        for (String str1 : cId) {
-            Course c = new Course();
-            c.setId(Integer.parseInt(str1));
-            clist.add(c);
-        }
+        c.setTeachers(tlist);
+        c.setStudents(slist);
         
-        t.setStudents(slist);
-        t.setCourses(clist);
-        TeacherDAO dao = new TeacherDAO();
-        dao.insert(t);
+        CourseDAO dao = new CourseDAO();
+        dao.insert(c);
 
     }
 
     @Override
     public void delete() {
         
-        TeacherDAO dao = new TeacherDAO();
+        CourseDAO dao = new CourseDAO();
         System.out.println("ID: ");
         dao.delete(scan.nextInt());
     }
 
     @Override
     public void update() {
-        TeacherDAO dao = new TeacherDAO();
-        Teacher t = new Teacher();
+        CourseDAO dao = new CourseDAO();
+        Course c = new Course();
         
         System.out.print("ID: ");
-        t.setId(scan.nextInt());
+        c.setId(scan.nextInt());
         System.out.print("Name: ");
-        t.setName(scan.next());
+        c.setName(scan.next());
         
-        dao.update(t);
+        dao.update(c);
     }
 
     @Override
-    public Teacher print() {
-        TeacherDAO dao = new TeacherDAO();
+    public Course print() {
+        CourseDAO dao = new CourseDAO();
         System.out.println("ID: ");
         int id = scan.nextInt();
-        Teacher s = (Teacher)dao.select(id);
-        return s;
+        Course c = (Course)dao.select(id);
+        return c;
     }
+    
 }

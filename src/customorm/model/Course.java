@@ -13,13 +13,12 @@ import java.util.Objects;
  *
  * @author junaid.ahmad
  */
-
-public class Teacher {
+public class Course {
     private int id;
     private String name;
+    private List<Teacher> teachers = new ArrayList();
     private List<Student> students = new ArrayList();
-    private List<Course> courses = new ArrayList();
-    
+
     /**
      * @return the id
      */
@@ -49,6 +48,20 @@ public class Teacher {
     }
 
     /**
+     * @return the teachers
+     */
+    public List<Teacher> getTeachers() {
+        return teachers;
+    }
+
+    /**
+     * @param teachers the teachers to set
+     */
+    public void setTeachers(List<Teacher> teachers) {
+        this.teachers = teachers;
+    }
+
+    /**
      * @return the students
      */
     public List<Student> getStudents() {
@@ -62,26 +75,12 @@ public class Teacher {
         this.students = students;
     }
 
-    /**
-     * @return the courses
-     */
-    public List<Course> getCourses() {
-        return courses;
-    }
-
-    /**
-     * @param courses the courses to set
-     */
-    public void setCourses(List<Course> courses) {
-        this.courses = courses;
-    }
-    
     @Override
     public boolean equals(Object obj) {
         
-        if((obj != null) && (obj instanceof Teacher) 
-                && (this.id == ((Teacher)obj).getId()) 
-                && (this.name.equalsIgnoreCase(((Teacher)obj).getName()))){
+        if((obj != null) && (obj instanceof Course) 
+                && (this.id == ((Course)obj).getId()) 
+                && (this.name.equalsIgnoreCase(((Course)obj).getName()))){
             return true;
         }else{
             return false;
@@ -90,11 +89,9 @@ public class Teacher {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 37 * hash + this.id;
-        hash = 37 * hash + Objects.hashCode(this.name);
+        int hash = 5;
+        hash = 47 * hash + this.id;
+        hash = 47 * hash + Objects.hashCode(this.name);
         return hash;
     }
-
- 
 }

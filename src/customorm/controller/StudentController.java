@@ -31,9 +31,9 @@ public class StudentController implements BaseController{
         System.out.println("TeacherID's(comma seperated): ");
         String[] str = scan.next().split(",");
         List<Teacher> tlist = new ArrayList<>();
-        for (int i = 0; i < str.length; i++) {
+        for (String str1 : str) {
             Teacher t1 = new Teacher();
-            t1.setId(Integer.parseInt(str[i]));
+            t1.setId(Integer.parseInt(str1));
             tlist.add(t1);
         }
         

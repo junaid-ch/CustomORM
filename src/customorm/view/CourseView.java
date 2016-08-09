@@ -5,7 +5,8 @@
  */
 package customorm.view;
 
-import customorm.controller.TeacherController;
+import customorm.controller.CourseController;
+import customorm.controller.StudentController;
 import customorm.model.Course;
 import customorm.model.Student;
 import customorm.model.Teacher;
@@ -15,12 +16,14 @@ import java.util.Scanner;
  *
  * @author junaid.ahmad
  */
-public class TeacherView implements BaseView{
+public class CourseView implements BaseView{
+    
+    Scanner scan = null;
     
     @Override
     public void menu(){
         int option = 0;
-        Scanner scan = new Scanner(System.in);
+        scan = new Scanner(System.in);
         
         System.out.println("1. add");
         System.out.println("2. delete");
@@ -50,54 +53,53 @@ public class TeacherView implements BaseView{
     
     @Override
     public void add(){
-        TeacherController tc = new TeacherController();
-        tc.add();
+        CourseController cc = new CourseController();
+        cc.add();
     }
     
     @Override
     public void delete(){
-        TeacherController tc = new TeacherController();
-        tc.delete();
+        CourseController cc = new CourseController();
+        cc.delete();
     }
     
     @Override
     public void update(){
-        TeacherController tc = new TeacherController();
-        tc.update();
+        CourseController cc = new CourseController();
+        cc.update();
     }
     
     @Override
     public void print(){
-        TeacherController tc = new TeacherController();
-        Teacher t = tc.print();
         
-        if(t.getId() != 0){
-            System.out.println("Teacher: ");
-            System.out.println("ID: " + t.getId());
-            System.out.println("Name: " + t.getName());
+        CourseController cc = new CourseController();
+        Course c = cc.print();
+        if(c.getId() != 0){
+            System.out.println("Course: ");
+            System.out.println("ID: " + c.getId());
+            System.out.println("Name: " + c.getName());
+            System.out.println("Realted Teachers: ");
+            if(c.getTeachers().get(0).getId() != 0){
+                for (Teacher teacher : c.getTeachers()) {
+                    System.out.println("ID: " + teacher.getId() 
+                            + "\tName: " + teacher.getName());
+                }
+            }else{
+                System.out.println("No Teacher Found...");
+            } 
             System.out.println("Realted Students: ");
-            if(t.getStudents().get(0).getId() != 0){    //students exist or not
-                for (Student student: t.getStudents()) {
+            if(c.getStudents().get(0).getId() != 0){
+                for (Student student : c.getStudents()) {
                     System.out.println("ID: " + student.getId() 
-                            + "\tName: " + student.getName() 
+                            + "\tName: " + student.getName()
                             + "\tAddress: " + student.getAddress());
                 }
             }else{
-                System.out.println("No Student Found...");
-            }
+                System.out.println("No student Found...");
+            }    
             
-            System.out.println("Realted Courses: ");
-            if(t.getCourses().get(0).getId() != 0){    //courses exist or not
-                for (Course course: t.getCourses()) {
-                    System.out.println("ID: " + course.getId() 
-                            + "\tName: " + course.getName());
-                }
-            }else{
-                System.out.println("No course Found...");
-            }
         }else{
             System.out.println("No Record Found...");
         }
-    }
-    
+   }
 }

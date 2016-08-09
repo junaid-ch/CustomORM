@@ -8,7 +8,6 @@ package customorm.view;
 import customorm.controller.StudentController;
 import customorm.model.Student;
 import customorm.model.Teacher;
-import java.util.List;
 import java.util.Scanner;
 
 
