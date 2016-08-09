@@ -8,8 +8,9 @@ package customorm.controller;
 
 import customorm.dao.BaseDAO;
 import customorm.dao.DAOFactory;
-import customorm.dao.TeacherDAO;
+import customorm.model.BaseModel;
 import customorm.model.Course;
+import customorm.model.ModelFactory;
 import customorm.model.Student;
 import customorm.model.Teacher;
 import java.util.ArrayList;
@@ -25,21 +26,25 @@ public class TeacherController implements BaseController{
     private final Scanner scan;
     private final BaseDAO dao;
     private final DAOFactory dAOFactory;
+    private final ModelFactory modelFactory;
+    private BaseModel baseModel;
 
     public TeacherController() {
         scan = new Scanner(System.in);
         dAOFactory = new DAOFactory();
         dao = dAOFactory.getDAO("teacherDAO");
+        modelFactory = new ModelFactory();
     }
     
     @Override
     public void add() {
-        Teacher t = new Teacher();
+        baseModel = modelFactory.getModel("teacherModel");
+        Teacher teacher = (Teacher)baseModel;
         List<Student> slist = new ArrayList<>();
         List<Course> clist = new ArrayList<>();
         
         System.out.print("Name: ");
-        t.setName(scan.next());
+        teacher.setName(scan.next());
         System.out.print("StudentID's(comma seperated): ");
         String[] sId = scan.next().split(",");
         System.out.print("CourseID's(comma seperated): ");
@@ -57,10 +62,10 @@ public class TeacherController implements BaseController{
             clist.add(c);
         }
         
-        t.setStudents(slist);
-        t.setCourses(clist);
+        teacher.setStudents(slist);
+        teacher.setCourses(clist);
 
-        dao.insert(t);
+        dao.insert(teacher);
 
     }
 
@@ -72,7 +77,7 @@ public class TeacherController implements BaseController{
 
     @Override
     public void update() {
-        Teacher t = new Teacher();
+        Teacher t = (Teacher)modelFactory.getModel("teacherModel");
         
         System.out.print("ID: ");
         t.setId(scan.nextInt());

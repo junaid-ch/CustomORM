@@ -19,8 +19,8 @@ import customorm.model.Teacher;
 
 public class StudentView extends BaseView{
 
-    private ControllerFactory controllerFactory;
-    private BaseController baseController;
+    private final ControllerFactory controllerFactory;
+    private final BaseController baseController;
     
     public StudentView() {
         controllerFactory = new ControllerFactory();
@@ -45,15 +45,15 @@ public class StudentView extends BaseView{
     @Override
     public void print(){
         
-        Student s = (Student)baseController.print();
-        if(s.getId() != 0){
+        Student student = (Student)baseController.print();
+        if(student.getId() != 0){
             System.out.println("Student: ");
-            System.out.println("ID: " + s.getId() 
-                    + "\tName: " + s.getName()
-                    + "\tAddress: " + s.getAddress());
+            System.out.println("ID: " + student.getId() 
+                    + "\tName: " + student.getName()
+                    + "\tAddress: " + student.getAddress());
             System.out.println("Realted Teachers: ");
-            if(s.getTeachers().get(0).getId() != 0){
-                for (Teacher teacher : s.getTeachers()) {
+            if(student.getTeachers().get(0).getId() != 0){
+                for (Teacher teacher : student.getTeachers()) {
                     System.out.println("ID: " + teacher.getId() 
                             + "\tName: " + teacher.getName());
                 }
@@ -61,8 +61,8 @@ public class StudentView extends BaseView{
                 System.out.println("No Teacher Found...");
             }
             System.out.println("Realted Courses: ");
-            if(s.getCourses().get(0).getId() != 0){
-                for (Course course : s.getCourses()) {
+            if(student.getCourses().get(0).getId() != 0){
+                for (Course course : student.getCourses()) {
                     System.out.println("ID: " + course.getId() 
                             + "\tName: " + course.getName());
                 }

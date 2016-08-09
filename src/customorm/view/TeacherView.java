@@ -17,8 +17,8 @@ import customorm.model.Teacher;
  */
 public class TeacherView extends BaseView{
     
-    private ControllerFactory controllerFactory;
-    private BaseController baseController;
+    private final ControllerFactory controllerFactory;
+    private final BaseController baseController;
     
     public TeacherView() {
         controllerFactory = new ControllerFactory();
@@ -43,16 +43,16 @@ public class TeacherView extends BaseView{
     @Override
     public void print(){
         
-        Teacher t = (Teacher)baseController.print();
+        Teacher teacher = (Teacher)baseController.print();
         
-        if(t.getId() != 0){
+        if(teacher.getId() != 0){
             System.out.println("Teacher: ");
-             System.out.println("ID: " + t.getId() 
-                            + "\tName: " + t.getName());
+             System.out.println("ID: " + teacher.getId() 
+                            + "\tName: " + teacher.getName());
              
             System.out.println("Realted Students: ");
-            if(t.getStudents().get(0).getId() != 0){    //students exist or not
-                for (Student student: t.getStudents()) {
+            if(teacher.getStudents().get(0).getId() != 0){    //students exist or not
+                for (Student student: teacher.getStudents()) {
                     System.out.println("ID: " + student.getId() 
                             + "\tName: " + student.getName() 
                             + "\tAddress: " + student.getAddress());
@@ -62,8 +62,8 @@ public class TeacherView extends BaseView{
             }
             
             System.out.println("Realted Courses: ");
-            if(t.getCourses().get(0).getId() != 0){    //courses exist or not
-                for (Course course: t.getCourses()) {
+            if(teacher.getCourses().get(0).getId() != 0){    //courses exist or not
+                for (Course course: teacher.getCourses()) {
                     System.out.println("ID: " + course.getId() 
                             + "\tName: " + course.getName());
                 }

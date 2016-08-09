@@ -6,7 +6,9 @@
 package customorm.dao;
 
 import customorm.DBConfig;
+import customorm.model.BaseModel;
 import customorm.model.Course;
+import customorm.model.ModelFactory;
 import customorm.model.Student;
 import customorm.model.Teacher;
 import java.sql.Connection;
@@ -24,17 +26,20 @@ import java.util.logging.Logger;
  * @author junaid.ahmad
  */
 public class CourseDAO implements BaseDAO{
-    DBConfig dBConfig;
-    Connection conn = null;
+    
+    private Connection conn = null;
+    private final DBConfig dBConfig;
+    private final ModelFactory modelFactory;
+    
     public CourseDAO(){
         dBConfig = DBConfig.getInstance();
-        //conn = dBConfig.configureDB();
+        modelFactory = new ModelFactory();
     }
     
     @Override
-    public void insert(Object obj) {
+    public void insert(BaseModel obj) {
         PreparedStatement preparedStmt = null;
-        Course c = (Course)obj;
+        Course course = (Course)obj;
         StringBuilder query1 = new StringBuilder();
         StringBuilder query2 = new StringBuilder();
         
@@ -56,17 +61,17 @@ public class CourseDAO implements BaseDAO{
             // create the mysql insert preparedstatement
             preparedStmt = conn.prepareStatement(query, 
                     Statement.RETURN_GENERATED_KEYS);
-            preparedStmt.setString(1, c.getName());
+            preparedStmt.setString(1, course.getName());
             // execute the preparedstatement
             preparedStmt.execute();
             //getting id of last iserted record
             ResultSet r = preparedStmt.getGeneratedKeys();
             r.next();
             
-            if(c.getTeachers().get(0).getId() != 0){    //if teacher exist
+            if(course.getTeachers().get(0).getId() != 0){    //if teacher exist
                 //check whether teacher exist or not
-                for(int i = 0; i < c.getTeachers().size(); i++){
-                    query1.append(c.getTeachers()
+                for(int i = 0; i < course.getTeachers().size(); i++){
+                    query1.append(course.getTeachers()
                             .get(i).getId()).append(",");
                 }
                 query1.deleteCharAt(query1.length() -1);
@@ -84,10 +89,10 @@ public class CourseDAO implements BaseDAO{
                     preparedStmt.execute();
                 }
             }
-            if(c.getStudents().get(0).getId() != 0){    //if students exist
+            if(course.getStudents().get(0).getId() != 0){    //if students exist
                 //check whether studeny exist or not
-                for(int i = 0; i < c.getStudents().size(); i++){
-                    query2.append(c.getStudents()
+                for(int i = 0; i < course.getStudents().size(); i++){
+                    query2.append(course.getStudents()
                             .get(i).getId()).append(",");
                 }
                 query2.deleteCharAt(query2.length() -1);
@@ -178,9 +183,9 @@ public class CourseDAO implements BaseDAO{
     }
 
     @Override
-    public void update(Object obj) {
+    public void update(BaseModel obj) {
         PreparedStatement preparedStmt = null;
-        Course c = (Course)obj;
+        Course course = (Course)obj;
         try {
             if(conn == null){
                 conn = dBConfig.configureDB();
@@ -191,8 +196,8 @@ public class CourseDAO implements BaseDAO{
             
             // create the mysql update preparedstatement
             preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setString(1, c.getName());
-            preparedStmt.setInt(2, c.getId());
+            preparedStmt.setString(1, course.getName());
+            preparedStmt.setInt(2, course.getId());
             
             
             // execute the preparedstatement
@@ -225,8 +230,8 @@ public class CourseDAO implements BaseDAO{
     }
 
     @Override
-    public Object select(int id) {
-        Course course = new Course();
+    public BaseModel select(int id) {
+        Course course = (Course)modelFactory.getModel("courseModel");
         PreparedStatement preparedStmt = null;
         try {
             if(conn == null){

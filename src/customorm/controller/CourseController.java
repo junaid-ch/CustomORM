@@ -6,9 +6,10 @@
 package customorm.controller;
 
 import customorm.dao.BaseDAO;
-import customorm.dao.CourseDAO;
 import customorm.dao.DAOFactory;
+import customorm.model.BaseModel;
 import customorm.model.Course;
+import customorm.model.ModelFactory;
 import customorm.model.Student;
 import customorm.model.Teacher;
 import java.util.ArrayList;
@@ -24,21 +25,25 @@ public class CourseController implements BaseController{
     private Scanner scan;
     private BaseDAO dao;
     private DAOFactory dAOFactory;
+    private final ModelFactory modelFactory;
+    private BaseModel baseModel;
 
     public CourseController() {
         scan = new Scanner(System.in);
         dAOFactory = new DAOFactory();
         dao = dAOFactory.getDAO("courseDAO");
+        modelFactory = new ModelFactory();
     }
         
     @Override
     public void add() {
-        Course c = new Course();
+        baseModel = modelFactory.getModel("courseModel");
+        Course course = (Course)baseModel;
         List<Teacher> tlist = new ArrayList<>();
         List<Student> slist = new ArrayList<>();
 
         System.out.print("Name: ");
-        c.setName(scan.next());
+        course.setName(scan.next());
         System.out.print("TeacherID's(comma seperated): ");
         String[] tId = scan.next().split(",");
         System.out.print("StudentID's(comma seperated): ");
@@ -58,10 +63,10 @@ public class CourseController implements BaseController{
             slist.add(t1);
         }
         
-        c.setTeachers(tlist);
-        c.setStudents(slist);
+        course.setTeachers(tlist);
+        course.setStudents(slist);
         
-        dao.insert(c);
+        dao.insert(course);
 
     }
 
@@ -73,7 +78,7 @@ public class CourseController implements BaseController{
 
     @Override
     public void update() {
-        Course c = new Course();
+        Course c = (Course)modelFactory.getModel("courseModel");
         
         System.out.print("ID: ");
         c.setId(scan.nextInt());
@@ -89,6 +94,5 @@ public class CourseController implements BaseController{
         int id = scan.nextInt();
         Course c = (Course)dao.select(id);
         return c;
-    }
-    
+    }  
 }

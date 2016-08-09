@@ -43,15 +43,15 @@ public class CourseView extends BaseView{
     @Override
     public void print(){
         
-        Course c = (Course)baseController.print();
-        if(c.getId() != 0){
+        Course course = (Course)baseController.print();
+        if(course.getId() != 0){
             System.out.println("Course: ");
-            System.out.println("ID: " + c.getId() 
-                    + "\tName: " + c.getName());
+            System.out.println("ID: " + course.getId() 
+                    + "\tName: " + course.getName());
             
             System.out.println("Realted Teachers: ");
-            if(c.getTeachers().get(0).getId() != 0){
-                for (Teacher teacher : c.getTeachers()) {
+            if(course.getTeachers().get(0).getId() != 0){
+                for (Teacher teacher : course.getTeachers()) {
                     System.out.println("ID: " + teacher.getId() 
                             + "\tName: " + teacher.getName());
                 }
@@ -60,8 +60,8 @@ public class CourseView extends BaseView{
             } 
             
             System.out.println("Realted Students: ");
-            if(c.getStudents().get(0).getId() != 0){
-                for (Student student : c.getStudents()) {
+            if(course.getStudents().get(0).getId() != 0){
+                for (Student student : course.getStudents()) {
                     System.out.println("ID: " + student.getId() 
                             + "\tName: " + student.getName()
                             + "\tAddress: " + student.getAddress());

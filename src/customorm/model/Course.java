@@ -13,7 +13,8 @@ import java.util.Objects;
  *
  * @author junaid.ahmad
  */
-public class Course {
+public class Course implements BaseModel{
+    
     private int id;
     private String name;
     private List<Teacher> teachers = new ArrayList();
@@ -22,6 +23,7 @@ public class Course {
     /**
      * @return the id
      */
+    @Override
     public int getId() {
         return id;
     }
@@ -29,6 +31,7 @@ public class Course {
     /**
      * @param id the id to set
      */
+    @Override
     public void setId(int id) {
         this.id = id;
     }
@@ -36,6 +39,7 @@ public class Course {
     /**
      * @return the name
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -43,6 +47,7 @@ public class Course {
     /**
      * @param name the name to set
      */
+    @Override
     public void setName(String name) {
         this.name = name;
     }

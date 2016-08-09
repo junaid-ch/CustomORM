@@ -6,7 +6,9 @@
 package customorm.dao;
 
 import customorm.DBConfig;
+import customorm.model.BaseModel;
 import customorm.model.Course;
+import customorm.model.ModelFactory;
 import customorm.model.Student;
 import customorm.model.Teacher;
 import java.sql.Connection;
@@ -24,17 +26,18 @@ import java.util.List;
  */
 public class StudentDAO implements BaseDAO{
 
-    DBConfig dBConfig;
-    Connection conn = null;
+    private Connection conn = null;
+    private final DBConfig dBConfig;
+    private final ModelFactory modelFactory;
     public StudentDAO(){
         dBConfig = DBConfig.getInstance();
-        //conn = dBConfig.configureDB();
+        modelFactory = new ModelFactory();
     }
     
     @Override
-    public void insert(Object obj) {
+    public void insert(BaseModel obj) {
         PreparedStatement preparedStmt = null;
-        Student s = (Student)obj;
+        Student student = (Student)obj;
         StringBuilder query1 = new StringBuilder();
         StringBuilder query2 = new StringBuilder();
         
@@ -56,18 +59,18 @@ public class StudentDAO implements BaseDAO{
             // create the mysql insert preparedstatement
             preparedStmt = conn.prepareStatement(query, 
                     Statement.RETURN_GENERATED_KEYS);
-            preparedStmt.setString(1, s.getName());
-            preparedStmt.setString(2, s.getAddress());
+            preparedStmt.setString(1, student.getName());
+            preparedStmt.setString(2, student.getAddress());
             // execute the preparedstatement
             preparedStmt.execute();
             //getting id of last iserted record
             ResultSet r = preparedStmt.getGeneratedKeys();
             r.next();
             
-            if(s.getTeachers().get(0).getId() != 0){
+            if(student.getTeachers().get(0).getId() != 0){
                 //check whether teacher exist or not
-                for(int i = 0; i < s.getTeachers().size(); i++){
-                    query1.append(s.getTeachers()
+                for(int i = 0; i < student.getTeachers().size(); i++){
+                    query1.append(student.getTeachers()
                             .get(i).getId()).append(",");
                 }
                 query1.deleteCharAt(query1.length() -1);
@@ -85,10 +88,10 @@ public class StudentDAO implements BaseDAO{
                     preparedStmt.execute();
                 }
             }
-            if(s.getCourses().get(0).getId() != 0){
+            if(student.getCourses().get(0).getId() != 0){
                 //check whether course exist or not
-                for(int i = 0; i < s.getCourses().size(); i++){
-                    query2.append(s.getCourses()
+                for(int i = 0; i < student.getCourses().size(); i++){
+                    query2.append(student.getCourses()
                             .get(i).getId()).append(",");
                 }
                 query2.deleteCharAt(query2.length() -1);
@@ -101,8 +104,8 @@ public class StudentDAO implements BaseDAO{
                 //Adding data relation in student_course table
                 preparedStmt = conn.prepareStatement(query4);
                 while (rs.next()) {
-                    preparedStmt.setInt(1, rs.getInt("id"));
-                    preparedStmt.setInt(2, r.getInt(1)); 
+                    preparedStmt.setInt(1, r.getInt(1));
+                    preparedStmt.setInt(2, rs.getInt(1)); 
                     preparedStmt.execute();
                 }
             }
@@ -179,9 +182,9 @@ public class StudentDAO implements BaseDAO{
     }
 
     @Override
-    public void update(Object obj) {
+    public void update(BaseModel obj) {
         PreparedStatement preparedStmt = null;
-        Student s = (Student)obj;
+        Student student = (Student)obj;
         try {
             if(conn == null){
                 conn = dBConfig.configureDB();
@@ -193,9 +196,9 @@ public class StudentDAO implements BaseDAO{
             
             // create the mysql update preparedstatement
             preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setString(1, s.getName());
-            preparedStmt.setString(2, s.getAddress());
-            preparedStmt.setInt(3, s.getId());
+            preparedStmt.setString(1, student.getName());
+            preparedStmt.setString(2, student.getAddress());
+            preparedStmt.setInt(3, student.getId());
             
             
             // execute the preparedstatement
@@ -228,8 +231,8 @@ public class StudentDAO implements BaseDAO{
     }
 
     @Override
-    public Object select(int id) {
-        Student student = new Student();
+    public BaseModel select(int id) {
+        Student student = (Student)modelFactory.getModel("studentModel");
         PreparedStatement preparedStmt = null;
         try {
             if(conn == null){

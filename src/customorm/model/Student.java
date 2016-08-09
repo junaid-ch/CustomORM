@@ -14,7 +14,7 @@ import java.util.Objects;
  * @author junaid.ahmad
  */
 
-public class Student {
+public class Student implements BaseModel{
     
    private int id;
    private String name;
@@ -22,10 +22,12 @@ public class Student {
    private List<Teacher> teachers = new ArrayList();
    private List<Course> courses = new ArrayList();
    
+   @Override
    public String getName() {
       return name;
    }
    
+   @Override
    public void setName(String name) {
       this.name = name;
    }
@@ -47,6 +49,7 @@ public class Student {
     /**
      * @return the id
      */
+   @Override
     public int getId() {
         return id;
     }
@@ -54,6 +57,7 @@ public class Student {
     /**
      * @param id the id to set
      */
+   @Override
     public void setId(int id) {
         this.id = id;
     }
