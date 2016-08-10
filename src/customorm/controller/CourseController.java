@@ -5,7 +5,6 @@
  */
 package customorm.controller;
 
-
 import customorm.dao.BaseDAO;
 import customorm.dao.DAOFactory;
 import customorm.model.BaseModel;
@@ -21,77 +20,79 @@ import java.util.Scanner;
  *
  * @author junaid.ahmad
  */
-public class TeacherController implements BaseController{
+public class CourseController implements BaseController{
     
-    private final Scanner scan;
-    private final BaseDAO dao;
-    private final DAOFactory dAOFactory;
+    private Scanner scan;
+    private BaseDAO dao;
+    private DAOFactory dAOFactory;
     private final ModelFactory modelFactory;
     private BaseModel baseModel;
 
-    public TeacherController() {
+    public CourseController() {
         scan = new Scanner(System.in);
         dAOFactory = new DAOFactory();
-        dao = dAOFactory.getDAO("teacherDAO");
+        dao = dAOFactory.getDAO("courseDAO");
         modelFactory = new ModelFactory();
     }
-    
+        
     @Override
     public void add() {
-        baseModel = modelFactory.getModel("teacherModel");
-        Teacher teacher = (Teacher)baseModel;
+        baseModel = modelFactory.getModel("courseModel");
+        Course course = (Course)baseModel;
+        List<Teacher> tlist = new ArrayList<>();
         List<Student> slist = new ArrayList<>();
-        List<Course> clist = new ArrayList<>();
-        
+
         System.out.print("Name: ");
-        teacher.setName(scan.next());
+        course.setName(scan.next());
+        System.out.print("TeacherID's(comma seperated): ");
+        String[] tId = scan.next().split(",");
         System.out.print("StudentID's(comma seperated): ");
         String[] sId = scan.next().split(",");
-        System.out.print("CourseID's(comma seperated): ");
-        String[] cId = scan.next().split(",");
+        
+        
+        for (String str1 : tId) {
+            Teacher t1 = new Teacher();
+            t1.setId(Integer.parseInt(str1));
+            tlist.add(t1);
+        }
+        
         
         for (String str1 : sId) {
-            Student s = new Student();
-            s.setId(Integer.parseInt(str1));
-            slist.add(s);
+            Student t1 = new Student();
+            t1.setId(Integer.parseInt(str1));
+            slist.add(t1);
         }
         
-        for (String str1 : cId) {
-            Course c = new Course();
-            c.setId(Integer.parseInt(str1));
-            clist.add(c);
-        }
+        course.setTeachers(tlist);
+        course.setStudents(slist);
         
-        teacher.setStudents(slist);
-        teacher.setCourses(clist);
-
-        dao.insert(teacher);
+        dao.insert(course);
 
     }
 
     @Override
-    public void delete() {
+    public void delete() {        
         System.out.print("ID: ");
         dao.delete(scan.nextInt());
     }
 
     @Override
     public void update() {
-        Teacher t = (Teacher)modelFactory.getModel("teacherModel");
+        Course c = (Course)modelFactory.getModel("courseModel");
         
         System.out.print("ID: ");
-        t.setId(scan.nextInt());
+        c.setId(scan.nextInt());
         System.out.print("Name: ");
-        t.setName(scan.next());
+        c.setName(scan.next());
         
-        dao.update(t);
+        dao.update(c);
     }
 
     @Override
-    public Teacher print() {
+    public Course print() {
         System.out.print("ID: ");
         int id = scan.nextInt();
-        Teacher s = (Teacher)dao.select(id);
-        return s;
-    }
+        Course c = (Course)dao.select(id);
+        return c;
+    }  
 }

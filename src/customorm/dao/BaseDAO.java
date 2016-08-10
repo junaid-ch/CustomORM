@@ -5,15 +5,15 @@
  */
 package customorm.dao;
 
-import customorm.model.Student;
+import customorm.model.BaseModel;
 
 /**
  *
  * @author junaid.ahmad
  */
 public interface BaseDAO {
-    public void insert(Object obj);
+    public void insert(BaseModel obj);
     public void delete(int id);
-    public void update(Object obj);
-    public Object select(int id);
+    public void update(BaseModel obj);
+    public BaseModel select(int id);
 }

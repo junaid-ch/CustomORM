@@ -11,22 +11,20 @@ import customorm.model.Course;
 import customorm.model.Student;
 import customorm.model.Teacher;
 
-
 /**
  *
  * @author junaid.ahmad
  */
-
-public class StudentView extends BaseView{
-
+public class CourseView extends BaseView{
+    
     private final ControllerFactory controllerFactory;
     private final BaseController baseController;
     
-    public StudentView() {
+    public CourseView() {
         controllerFactory = new ControllerFactory();
-        baseController = controllerFactory.getController("studentController");
+        baseController = controllerFactory.getController("courseController");
     }
-        
+    
     @Override
     public void add(){
         baseController.add();
@@ -45,33 +43,35 @@ public class StudentView extends BaseView{
     @Override
     public void print(){
         
-        Student student = (Student)baseController.print();
-        if(student.getId() != 0){
-            System.out.println("Student: ");
-            System.out.println("ID: " + student.getId() 
-                    + "\tName: " + student.getName()
-                    + "\tAddress: " + student.getAddress());
+        Course course = (Course)baseController.print();
+        if(course.getId() != 0){
+            System.out.println("Course: ");
+            System.out.println("ID: " + course.getId() 
+                    + "\tName: " + course.getName());
+            
             System.out.println("Realted Teachers: ");
-            if(student.getTeachers().get(0).getId() != 0){
-                for (Teacher teacher : student.getTeachers()) {
+            if(course.getTeachers().get(0).getId() != 0){
+                for (Teacher teacher : course.getTeachers()) {
                     System.out.println("ID: " + teacher.getId() 
                             + "\tName: " + teacher.getName());
                 }
             }else{
                 System.out.println("No Teacher Found...");
-            }
-            System.out.println("Realted Courses: ");
-            if(student.getCourses().get(0).getId() != 0){
-                for (Course course : student.getCourses()) {
-                    System.out.println("ID: " + course.getId() 
-                            + "\tName: " + course.getName());
+            } 
+            
+            System.out.println("Realted Students: ");
+            if(course.getStudents().get(0).getId() != 0){
+                for (Student student : course.getStudents()) {
+                    System.out.println("ID: " + student.getId() 
+                            + "\tName: " + student.getName()
+                            + "\tAddress: " + student.getAddress());
                 }
             }else{
-                System.out.println("No Course Found...");
-            }      
+                System.out.println("No student Found...");
+            }    
+            
         }else{
             System.out.println("No Record Found...");
         }
    }
-    
 }

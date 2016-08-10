@@ -40,7 +40,7 @@ public class DBConfig {
         }
         try{
            //STEP 2: Register JDBC driver
-           Class.forName("com.mysql.jdbc.Driver");
+           Class.forName(JDBC_DRIVER);
 
            //STEP 3: Open a connection
             conn = DriverManager.getConnection(DB_URL,USER,PASS);

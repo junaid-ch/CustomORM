@@ -5,16 +5,48 @@
  */
 package customorm.view;
 
+import java.util.Scanner;
+
 /**
  *
  * @author junaid.ahmad
  */
-public interface BaseView {
+public abstract class BaseView {
     
-    public void menu();
-    public void add();
-    public void delete();
-    public void update();
-    public void print();
+    Scanner scan = null;
     
+    abstract void add();
+    abstract void delete();
+    abstract void update();
+    abstract void print();  
+    
+    public void menu(){
+        int option = 0;
+        scan = new Scanner(System.in);
+        
+        System.out.println("1. add");
+        System.out.println("2. delete");
+        System.out.println("3. update");
+        System.out.println("4. view");
+        
+        option = scan.nextInt();
+
+        switch (option) {
+            case 1:
+                add();
+                break;
+            case 2:
+                delete();
+                break;
+            case 3:
+                update();
+                break;
+            case 4:
+                print();
+                break;
+            default:
+                break;
+        }
+        
+    } 
 }

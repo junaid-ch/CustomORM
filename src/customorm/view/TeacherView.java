@@ -5,74 +5,71 @@
  */
 package customorm.view;
 
-import customorm.controller.TeacherController;
+import customorm.controller.BaseController;
+import customorm.controller.ControllerFactory;
+import customorm.model.Course;
+import customorm.model.Student;
 import customorm.model.Teacher;
-import java.util.Scanner;
 
 /**
  *
  * @author junaid.ahmad
  */
-public class TeacherView implements BaseView{
+public class TeacherView extends BaseView{
     
-    @Override
-    public void menu(){
-        int option = 0;
-        Scanner scan = new Scanner(System.in);
-        
-        System.out.println("1. add");
-        System.out.println("2. delete");
-        System.out.println("3. update");
-        System.out.println("4. view");
-        
-        option = scan.nextInt();
-        
-        switch (option) {
-            case 1:
-                add();
-                break;
-            case 2:
-                delete();
-                break;
-            case 3:
-                update();
-                break;
-            case 4:
-                print();
-                break;
-            default:
-                break;
-        }
-        
+    private final ControllerFactory controllerFactory;
+    private final BaseController baseController;
+    
+    public TeacherView() {
+        controllerFactory = new ControllerFactory();
+        baseController = controllerFactory.getController("teacherController");
     }
     
     @Override
     public void add(){
-        TeacherController tc = new TeacherController();
-        tc.add();
+        baseController.add();
     }
     
     @Override
     public void delete(){
-        TeacherController tc = new TeacherController();
-        tc.delete();
+        baseController.delete();
     }
     
     @Override
     public void update(){
-        TeacherController tc = new TeacherController();
-        tc.update();
+        baseController.update();
     }
     
     @Override
     public void print(){
-        TeacherController tc = new TeacherController();
-        Teacher t = tc.print();
         
-        if(t.getId() != 0){
+        Teacher teacher = (Teacher)baseController.print();
+        
+        if(teacher.getId() != 0){
             System.out.println("Teacher: ");
-            System.out.println("ID: " + t.getId());
-            System.out.println("Name: " + t.getName());
+             System.out.println("ID: " + teacher.getId() 
+                            + "\tName: " + teacher.getName());
+             
+            System.out.println("Realted Students: ");
+            if(teacher.getStudents().get(0).getId() != 0){    //students exist or not
+                for (Student student: teacher.getStudents()) {
+                    System.out.println("ID: " + student.getId() 
+                            + "\tName: " + student.getName() 
+                            + "\tAddress: " + student.getAddress());
+                }
+            }else{
+                System.out.println("No Student Found...");
+            }
+            
+            System.out.println("Realted Courses: ");
+            if(teacher.getCourses().get(0).getId() != 0){    //courses exist or not
+                for (Course course: teacher.getCourses()) {
+                    System.out.println("ID: " + course.getId() 
+                            + "\tName: " + course.getName());
+                }
+            }else{
+                System.out.println("No course Found...");
+            }
         }else{
             System.out.println("No Record Found...");
         }

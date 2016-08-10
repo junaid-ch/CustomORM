@@ -3,19 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package customorm.controller;
-
-import customorm.model.BaseModel;
+package customorm.model;
 
 /**
  *
  * @author junaid.ahmad
  */
-public interface BaseController {
-
-   
-    public void add();
-    public void delete();
-    public void update();
-    public BaseModel print();   
+public interface BaseModel {
+    
+    public String getName(); 
+    public void setName(String name);   
+    public int getId();  
+    public void setId(int id);  
 }

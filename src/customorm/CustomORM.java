@@ -6,6 +6,8 @@
 package customorm;
 
 
+import customorm.view.BaseView;
+import customorm.view.CourseView;
 import customorm.view.StudentView;
 import customorm.view.TeacherView;
 import java.util.Scanner;
@@ -22,27 +24,31 @@ public class CustomORM {
     public static void main(String[] args) {
         // TODO code application logic here
         
+        BaseView bv;
         Scanner scan = new Scanner(System.in);
         int option = 0;
         
         System.out.println("1. Teacher");
         System.out.println("2. Student");
+        System.out.println("3. Course");
         
         option = scan.nextInt();
         
         switch(option){
             case 1:
-                TeacherView tv = new TeacherView();
-                tv.menu();
+                bv = new TeacherView();
                 break;
             case 2:
-                StudentView sv = new StudentView();
-                sv.menu();
+                bv = new StudentView();
+                break;
+            case 3:
+                bv = new CourseView();
                 break;
             default:
-                break;
+                System.out.println("Wrong input....");
+                return;
         }
-        
+        bv.menu();
         
     }
     

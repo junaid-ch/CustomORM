@@ -5,8 +5,15 @@
  */
 package customorm.controller;
 
-import customorm.dao.StudentDAO;
+import customorm.dao.BaseDAO;
+import customorm.dao.DAOFactory;
+import customorm.model.BaseModel;
+import customorm.model.Course;
+import customorm.model.ModelFactory;
 import customorm.model.Student;
+import customorm.model.Teacher;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -15,34 +22,63 @@ import java.util.Scanner;
  */
 public class StudentController implements BaseController{
 
-    Scanner scan = new Scanner(System.in);
+    private final Scanner scan;
+    private final BaseDAO dao;
+    private final DAOFactory dAOFactory;
+    private final ModelFactory modelFactory;
+    private BaseModel baseModel;
+
+    public StudentController() {
+        scan = new Scanner(System.in);
+        dAOFactory = new DAOFactory();
+        dao = dAOFactory.getDAO("studentDAO");
+        modelFactory = new ModelFactory();    
+    }
     
     @Override
     public void add() {
-        Student t = new Student();
+        baseModel = modelFactory.getModel("studentModel");
+        Student student = (Student)baseModel;
+        List<Teacher> tlist = new ArrayList<>();
+        List<Course> clist = new ArrayList<>();
         
-        System.out.println("Name: ");
-        t.setName(scan.next());
-        System.out.println("Address: ");
-        t.setAddress(scan.next());
+        System.out.print("Name: ");
+        student.setName(scan.next());
+        System.out.print("Address: ");
+        student.setAddress(scan.next());
+        System.out.print("TeacherID's(comma seperated): ");
+        String[] tId = scan.next().split(",");
+        System.out.print("CourseID's(comma seperated): ");
+        String[] cId = scan.next().split(",");
         
-        StudentDAO dao = new StudentDAO();
-        dao.insert(t);
+        for (String str1 : tId) {
+            Teacher t1 = new Teacher();
+            t1.setId(Integer.parseInt(str1));
+            tlist.add(t1);
+        }
+        
+        for (String str1 : cId) {
+            Course c = new Course();
+            c.setId(Integer.parseInt(str1));
+            clist.add(c);
+        }
+        
+        student.setTeachers(tlist);
+        student.setCourses(clist);
+
+        dao.insert(student);
 
     }
 
     @Override
     public void delete() {
-        
-        StudentDAO dao = new StudentDAO();
-        System.out.println("ID: ");
+        System.out.print("ID: ");
         dao.delete(scan.nextInt());
     }
 
     @Override
     public void update() {
-        StudentDAO dao = new StudentDAO();
-        Student t = new Student();
+        Student t = (Student)modelFactory.getModel("studentModel");
         
         System.out.print("ID: ");
         t.setId(scan.nextInt());
@@ -56,11 +92,9 @@ public class StudentController implements BaseController{
 
     @Override
     public Student print() {
-        StudentDAO dao = new StudentDAO();
-        System.out.println("ID: ");
+        System.out.print("ID: ");
         int id = scan.nextInt();
         Student s = (Student)dao.select(id);
         return s;
-    }
-    
+    }   
 }
