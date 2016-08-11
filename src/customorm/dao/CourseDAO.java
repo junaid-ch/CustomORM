@@ -37,11 +37,12 @@ public class CourseDAO implements BaseDAO{
     }
     
     @Override
-    public void insert(BaseModel obj) {
+    public int insert(BaseModel obj) {
         PreparedStatement preparedStmt = null;
         Course course = (Course)obj;
         StringBuilder query1 = new StringBuilder();
         StringBuilder query2 = new StringBuilder();
+        int rowsAffected = 0;
         
         try {
             if(conn == null){
@@ -63,7 +64,7 @@ public class CourseDAO implements BaseDAO{
                     Statement.RETURN_GENERATED_KEYS);
             preparedStmt.setString(1, course.getName());
             // execute the preparedstatement
-            preparedStmt.execute();
+            rowsAffected = preparedStmt.executeUpdate();
             //getting id of last iserted record
             ResultSet r = preparedStmt.getGeneratedKeys();
             r.next();
@@ -114,6 +115,7 @@ public class CourseDAO implements BaseDAO{
  
         } catch (SQLException ex) {
             Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+            rowsAffected = 0;
             if (conn != null) {
                 try {
                     System.err.print("Transaction is being rolled back");
@@ -135,12 +137,13 @@ public class CourseDAO implements BaseDAO{
                 se.printStackTrace();
             }//end finally try
         }
-
+        return rowsAffected;
     }
 
     @Override
-    public void delete(int id) {
+    public int delete(int id) {
         PreparedStatement preparedStmt = null;
+        int rowsAffected = 0;
         try {
             if(conn == null){
                 conn = dBConfig.configureDB();
@@ -154,9 +157,10 @@ public class CourseDAO implements BaseDAO{
             preparedStmt.setInt(1, id);
             
             // execute the preparedstatement
-            preparedStmt.executeUpdate();
+            rowsAffected = preparedStmt.executeUpdate();
             conn.commit();
         } catch (SQLException ex) {
+            rowsAffected = 0;
             Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
             if (conn != null) {
                 try {
@@ -179,13 +183,14 @@ public class CourseDAO implements BaseDAO{
                 se.printStackTrace();
             }//end finally try
         }
-
+        return rowsAffected;
     }
 
     @Override
-    public void update(BaseModel obj) {
+    public int update(BaseModel obj) {
         PreparedStatement preparedStmt = null;
         Course course = (Course)obj;
+        int rowsAffected = 0;
         try {
             if(conn == null){
                 conn = dBConfig.configureDB();
@@ -201,10 +206,11 @@ public class CourseDAO implements BaseDAO{
             
             
             // execute the preparedstatement
-            preparedStmt.executeUpdate();
+            rowsAffected = preparedStmt.executeUpdate();
             conn.commit();
         } catch (SQLException ex) {
             Logger.getLogger(CourseDAO.class.getName()).log(Level.SEVERE, null, ex);
+            rowsAffected = 0;
             if (conn != null) {
                 try {
                     System.err.print("Transaction is being rolled back");
@@ -227,6 +233,7 @@ public class CourseDAO implements BaseDAO{
                 se.printStackTrace();
             }//end finally try
         }
+        return rowsAffected;
     }
 
     @Override

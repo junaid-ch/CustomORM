@@ -35,14 +35,15 @@ public class StudentDAO implements BaseDAO{
     }
     
     @Override
-    public void insert(BaseModel obj) {
+    public int insert(BaseModel obj) {
         PreparedStatement preparedStmt = null;
         Student student = (Student)obj;
         StringBuilder query1 = new StringBuilder();
         StringBuilder query2 = new StringBuilder();
+        int rowsAffected = 0;
         
         try {
-            if(conn == null){
+            if(conn == null || conn.isClosed()){
                 conn = dBConfig.configureDB();
             }
             conn.setAutoCommit(false);
@@ -62,10 +63,11 @@ public class StudentDAO implements BaseDAO{
             preparedStmt.setString(1, student.getName());
             preparedStmt.setString(2, student.getAddress());
             // execute the preparedstatement
-            preparedStmt.execute();
+            rowsAffected = preparedStmt.executeUpdate();
             //getting id of last iserted record
             ResultSet r = preparedStmt.getGeneratedKeys();
             r.next();
+            student.setId(r.getInt(1));
             
             if(student.getTeachers().get(0).getId() != 0){
                 //check whether teacher exist or not
@@ -84,7 +86,7 @@ public class StudentDAO implements BaseDAO{
                 preparedStmt = conn.prepareStatement(query3);
                 while (rs.next()) {
                     preparedStmt.setInt(1, rs.getInt("id"));
-                    preparedStmt.setInt(2, r.getInt(1)); 
+                    preparedStmt.setInt(2, student.getId()); 
                     preparedStmt.execute();
                 }
             }
@@ -104,7 +106,7 @@ public class StudentDAO implements BaseDAO{
                 //Adding data relation in student_course table
                 preparedStmt = conn.prepareStatement(query4);
                 while (rs.next()) {
-                    preparedStmt.setInt(1, r.getInt(1));
+                    preparedStmt.setInt(1, student.getId());
                     preparedStmt.setInt(2, rs.getInt(1)); 
                     preparedStmt.execute();
                 }
@@ -113,6 +115,7 @@ public class StudentDAO implements BaseDAO{
  
         } catch (SQLException ex) {
             Logger.getLogger(StudentDAO.class.getName()).log(Level.SEVERE, null, ex);
+            rowsAffected = 0;
             if (conn != null) {
                 try {
                     System.err.print("Transaction is being rolled back");
@@ -134,14 +137,15 @@ public class StudentDAO implements BaseDAO{
                 se.printStackTrace();
             }//end finally try
         }
-
+        return rowsAffected;
     }
 
     @Override
-    public void delete(int id) {
+    public int delete(int id) {
         PreparedStatement preparedStmt = null;
+        int rowsAffected = 0;
         try {
-            if(conn == null){
+            if(conn == null || conn.isClosed()){
                 conn = dBConfig.configureDB();
             }
             conn.setAutoCommit(false);
@@ -153,10 +157,11 @@ public class StudentDAO implements BaseDAO{
             preparedStmt.setInt(1, id);      
             
             // execute the preparedstatement
-            preparedStmt.executeUpdate();
+            rowsAffected = preparedStmt.executeUpdate();
             conn.commit();
         } catch (SQLException ex) {
             Logger.getLogger(StudentDAO.class.getName()).log(Level.SEVERE, null, ex);
+            rowsAffected = 0;
             if (conn != null) {
                 try {
                     System.err.print("Transaction is being rolled back");
@@ -178,15 +183,16 @@ public class StudentDAO implements BaseDAO{
                 se.printStackTrace();
             }//end finally try
         }
-
+        return rowsAffected;
     }
 
     @Override
-    public void update(BaseModel obj) {
+    public int update(BaseModel obj) {
         PreparedStatement preparedStmt = null;
         Student student = (Student)obj;
+        int rowsAffected = 0;
         try {
-            if(conn == null){
+            if(conn == null || conn.isClosed()){
                 conn = dBConfig.configureDB();
             }
             conn.setAutoCommit(false);
@@ -202,10 +208,11 @@ public class StudentDAO implements BaseDAO{
             
             
             // execute the preparedstatement
-            preparedStmt.executeUpdate();
+            rowsAffected = preparedStmt.executeUpdate();
             conn.commit();
         } catch (SQLException ex) {
             Logger.getLogger(StudentDAO.class.getName()).log(Level.SEVERE, null, ex);
+            rowsAffected = 0;
             if (conn != null) {
                 try {
                     System.err.print("Transaction is being rolled back");
@@ -228,6 +235,7 @@ public class StudentDAO implements BaseDAO{
                 se.printStackTrace();
             }//end finally try
         }
+        return rowsAffected;
     }
 
     @Override
@@ -235,7 +243,7 @@ public class StudentDAO implements BaseDAO{
         Student student = (Student)modelFactory.getModel("studentModel");
         PreparedStatement preparedStmt = null;
         try {
-            if(conn == null){
+            if(conn == null || conn.isClosed()){
                 conn = dBConfig.configureDB();
             }
             conn.setAutoCommit(false);

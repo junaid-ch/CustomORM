@@ -20,7 +20,7 @@ import java.util.Scanner;
  *
  * @author junaid.ahmad
  */
-public class StudentController implements BaseController{
+public class StudentController implements BaseController {
 
     private final Scanner scan;
     private final BaseDAO dao;
@@ -32,16 +32,16 @@ public class StudentController implements BaseController{
         scan = new Scanner(System.in);
         dAOFactory = new DAOFactory();
         dao = dAOFactory.getDAO("studentDAO");
-        modelFactory = new ModelFactory();    
+        modelFactory = new ModelFactory();
     }
-    
+
     @Override
-    public void add() {
+    public int add() {
         baseModel = modelFactory.getModel("studentModel");
-        Student student = (Student)baseModel;
+        Student student = (Student) baseModel;
         List<Teacher> tlist = new ArrayList<>();
         List<Course> clist = new ArrayList<>();
-        
+
         System.out.print("Name: ");
         student.setName(scan.next());
         System.out.print("Address: ");
@@ -50,51 +50,51 @@ public class StudentController implements BaseController{
         String[] tId = scan.next().split(",");
         System.out.print("CourseID's(comma seperated): ");
         String[] cId = scan.next().split(",");
-        
+
         for (String str1 : tId) {
             Teacher t1 = new Teacher();
             t1.setId(Integer.parseInt(str1));
             tlist.add(t1);
         }
-        
+
         for (String str1 : cId) {
             Course c = new Course();
             c.setId(Integer.parseInt(str1));
             clist.add(c);
         }
-        
+
         student.setTeachers(tlist);
         student.setCourses(clist);
 
-        dao.insert(student);
+        return dao.insert(student);
 
     }
 
     @Override
-    public void delete() {
+    public int delete() {
         System.out.print("ID: ");
-        dao.delete(scan.nextInt());
+        return dao.delete(scan.nextInt());
     }
 
     @Override
-    public void update() {
-        Student t = (Student)modelFactory.getModel("studentModel");
-        
+    public int update() {
+        Student t = (Student) modelFactory.getModel("studentModel");
+
         System.out.print("ID: ");
         t.setId(scan.nextInt());
         System.out.print("Name: ");
         t.setName(scan.next());
         System.out.print("Address: ");
         t.setAddress(scan.next());
-        
-        dao.update(t);
+
+        return dao.update(t);
     }
 
     @Override
     public Student print() {
         System.out.print("ID: ");
         int id = scan.nextInt();
-        Student s = (Student)dao.select(id);
+        Student s = (Student) dao.select(id);
         return s;
-    }   
+    }
 }

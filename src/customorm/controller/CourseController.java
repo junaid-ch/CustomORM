@@ -36,7 +36,7 @@ public class CourseController implements BaseController{
     }
         
     @Override
-    public void add() {
+    public int add() {
         baseModel = modelFactory.getModel("courseModel");
         Course course = (Course)baseModel;
         List<Teacher> tlist = new ArrayList<>();
@@ -66,18 +66,18 @@ public class CourseController implements BaseController{
         course.setTeachers(tlist);
         course.setStudents(slist);
         
-        dao.insert(course);
+        return dao.insert(course);
 
     }
 
     @Override
-    public void delete() {        
+    public int delete() {        
         System.out.print("ID: ");
-        dao.delete(scan.nextInt());
+        return dao.delete(scan.nextInt());
     }
 
     @Override
-    public void update() {
+    public int update() {
         Course c = (Course)modelFactory.getModel("courseModel");
         
         System.out.print("ID: ");
@@ -85,7 +85,7 @@ public class CourseController implements BaseController{
         System.out.print("Name: ");
         c.setName(scan.next());
         
-        dao.update(c);
+        return dao.update(c);
     }
 
     @Override

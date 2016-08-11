@@ -14,8 +14,8 @@ import customorm.model.BaseModel;
 public interface BaseController {
 
    
-    public void add();
-    public void delete();
-    public void update();
+    public int add();
+    public int delete();
+    public int update();
     public BaseModel print();   
 }
